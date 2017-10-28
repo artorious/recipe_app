@@ -1,8 +1,5 @@
 # recipe_app
 A simple menu-driven recipe database program written in python3
-
-<div>
-<img src='static/recipe_format.png' alt='Recipe format' >
 <aside>
     <ul>
         <li>Store recipes for later retrival.</li>
@@ -15,7 +12,8 @@ A simple menu-driven recipe database program written in python3
         <li>Print Out recipes</li>
     </ul>
 </aside>
-<div>
+<img src='static/recipe_format.png' alt='Recipe format' >
+
 
 
 
