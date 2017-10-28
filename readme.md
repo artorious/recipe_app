@@ -1,15 +1,23 @@
 # recipe_app
 A simple menu-driven recipe database program written in python3
-<dl>
-    <dt>Store recipes for later retrival.</dt>
-    <dt>Search by:</dt>
-        <dd>Recipe title</dd>
-        <dd>Author</dd>
-        <dd>Ingredients</dd>
-    <dt>Create new recipe entries</dt>
-    <dt>Delete recipes</dt>
-    <dt>Print Out recipes</dt>
-</dl>
+
+<div>
+<img src='static/recipe_format.png' alt='Recipe format' >
+<aside>
+    <ul>
+        <li>Store recipes for later retrival.</li>
+        <li>Search by:</li>
+            <dd>Recipe title</dd>
+            <dd>Author</dd>
+            <dd>Ingredients</dd>
+        <li>Create new recipe entries</li>
+        <li>Delete recipes</li>
+        <li>Print Out recipes</li>
+    </ul>
+</aside>
+<div>
+
+
 
 DATA
 ====
@@ -59,5 +67,5 @@ License - Creative Commons Attribution-Share Alike 3.0 Unported license
 ==========================================================================
 More on the licence, 
 
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"><img alt="Creative Commons License" style="border-wilih:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
 
