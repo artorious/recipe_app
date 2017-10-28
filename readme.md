@@ -14,9 +14,6 @@
 </aside>
 <img src='static/recipe_format.png' alt='Recipe format' >
 
-
-
-
 DATA
 ====
 
