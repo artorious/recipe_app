@@ -1,5 +1,5 @@
-# recipe_app
-A simple menu-driven recipe database program written in python3
+# recipe_app - A simple menu-driven recipe database program written in python3
+
 <aside>
     <ul>
         <li>Store recipes for later retrival.</li>
