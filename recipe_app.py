@@ -40,9 +40,7 @@ class CookBook(object):
     def database_menu():
         '''A loop that displays a list of options that the user 
         can perform'''
-        
-        cbk = CookBook() # Initialize the class
-
+        cbk = CookBook() # Init
         loop = True # Controls program temination
         
         while loop == True:
@@ -69,8 +67,18 @@ class CookBook(object):
                 pass
             
             elif menu_selection == '3': # Show a Single Recipe
-                cbk.print_all_recipes()
-            
+                cbk.print_all_recipes() # list the recipes by pkid
+                try:
+                    recipe_selection = int(input('Enter recipe number or 0 to go back : '))
+                    if recipe_selection <= cbk.totalcount: 
+                        cbk.print_single_recipe(recipe_selection) # call with pkid
+                    elif recipe_selection == 0:
+                        print('Back to main menu')
+                    else:
+                        print('Unrecognized Command...Returnnig to menu')
+                except ValueError:
+                    print('Sorry.... NOT a valid recipe NUMBER..')
+
             elif menu_selection == '4': # Delete
                 pass
             
@@ -91,8 +99,8 @@ class CookBook(object):
 
 
     def print_all_recipes(self):
-        '''Prints all Recipes in the recipe_app database.
-        
+        '''
+        Prints all Recipes in the recipe_app database.
         Displays all the information out of the Recipes data table
         in the  database.
         '''
@@ -113,34 +121,57 @@ class CookBook(object):
         print('=' * 80)   
         print('Total Recipes - {0}'.format(self.totalcount))
         print('=' * 80)
-        inkey = input('press any key to continue')
+        inkey = input('press any key to continue >>') # pause
 
     def search_for_recipe(self):
         '''Allows a database search for a recipe'''
         pass
     
     def print_single_recipe(self, which):
-        '''Takes one argument which (the recipe).
-
+        '''
+        Takes one argument which (the recipe by pkid).
         Displays the data for a single recipe from all three tables in 
         the database (|Recipes|Ingredients|Instructions|)
         '''
-        pass
+        sql = 'SELECT * FROM Recipes WHERE pkid={0}'.format(which) 
+        print('*' * 80)
+        for record in cursor.execute(sql):# Query for gross recipe info by pkid
+            recipeID = record[0]
+            print("Title: {0} ".format(record[1]))
+            print("Serves: {0} ".format(record[2]))
+            print("Source: {0} ".format(record[3]))
+            print('')
+
+        sql = 'SELECT * FROM Ingredients WHERE recipeID={0}'.format(recipeID) 
+        print('Ingredients List:')
+        for record in cursor.execute(sql):# Query for Ingredients info by pkid
+            print(record[2])
+        print('')
+        
+        print('Instructions:')
+        sql = 'SELECT * FROM Instructions WHERE recipeID={0}'.format(recipeID)
+       
+        for record in cursor.execute(sql): # Query for Instructions info by pkid
+            print(record[2])
+        print('*' * 80)
+        inkey = input('press any key to continue >>') # pause
 
     def delete_recipe(self, which):
-        '''Takes one argument which (the recipe).
-
+        '''
+        Takes one argument which (the recipe).
         Deletes the recipe and all it's info from the database
         '''
         pass
     
     def add_new_recipe(self):
-        '''Adds a new recipe entry into the recipe_app database'''
+        '''
+        Adds a new recipe entry into the recipe_app database
+        '''
         pass
     
     def print_out_recipe(self, which):
-        '''Takes one argument which (the recipe).
-
+        '''
+        Takes one argument which (the recipe).
         Prints out the recipe to default printer.
         '''
         pass
