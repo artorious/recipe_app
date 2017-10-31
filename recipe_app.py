@@ -57,7 +57,7 @@ class CookBook(object):
             print('\t 5 - Add a recipe')
             print('\t 6 - Print a recipe')
             print('\t 0 - Exit')
-            print('=' * 70)
+            print('=' * 80)
             # Wait for user input
             menu_selection = input('Enter a selection [0-6]: ')
 
@@ -89,7 +89,6 @@ class CookBook(object):
                 print('{0} is NOT a valid menu selection.'.format(menu_selection))
                 print(format(' Try Again ', '-^80'))
 
-    # TODO: Start stubs of routines in the CookBook class
 
     def print_all_recipes(self):
         '''Prints all Recipes in the recipe_app database.
@@ -97,7 +96,24 @@ class CookBook(object):
         Displays all the information out of the Recipes data table
         in the  database.
         '''
-        pass
+        # "pretty-print" Header for recipe list. 
+        print('{0:5s} {1:35s} {2:10s} {3:20s}'.format('Item', 'Name', 'Serves', \
+                'Source'))  
+        # query database and display results from tuple returned by APSW
+        sql = 'SELECT * FROM Recipes' 
+        cntr = 0 # counts the number of recipes we display to the user
+        for table_row in cursor.execute(sql):
+            cntr += 1
+            # Use pkid  as Item to allow for correct recipe selection from Recipe Table.      
+            print('{0:5s} {1:35s} {2:10s} {3:20s}'.format(str(table_row[0]), \
+                str(table_row[1]) , str(table_row[2]), str(table_row[3])))
+
+            print('-' * 80)
+            self.totalcount = cntr
+        print('=' * 80)   
+        print('Total Recipes - {0}'.format(self.totalcount))
+        print('=' * 80)
+        inkey = input('press any key to continue')
 
     def search_for_recipe(self):
         '''Allows a database search for a recipe'''
