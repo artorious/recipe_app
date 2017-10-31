@@ -74,5 +74,45 @@ class CookBook(object):
                 print('{0} is NOT a valid menu selection.'.format(menu_selection))
                 print(format(' Try Again ', '-^80'))
 
+    # TODO: Start stubs of routines in the CookBook class
+
+    def print_all_recipes(self):
+        '''Prints all Recipes in the recipe_app database.
+        
+        Displays all the information out of the Recipes data table
+        in the  database.
+        '''
+        pass
+
+    def search_for_recipe(self):
+        '''Allows a database search for a recipe'''
+        pass
+    
+    def print_single_recipe(self, which):
+        '''Takes one argument which (the recipe).
+
+        Displays the data for a single recipe from all three tables in 
+        the database (|Recipes|Ingredients|Instructions|)
+        '''
+        pass
+
+    def delete_recipe(self, which):
+        '''Takes one argument which (the recipe).
+
+        Deletes the recipe and all it's info from the database
+        '''
+        pass
+    
+    def add_new_recipe(self):
+        '''Adds a new recipe entry into the recipe_app database'''
+        pass
+    
+    def print_out_recipe(self, which):
+        '''Takes one argument which (the recipe).
+
+        Prints out the recipe to default printer.
+        '''
+        pass
+
 if __name__ == '__main__':
     CookBook.database_menu()
