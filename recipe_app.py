@@ -9,6 +9,7 @@ Program features:
         + Ingredients.
     * Create new recipe entries.
     * Delete recipes
+    * Print out recipes
 
 NOTE:
     Data stored in Database File: recipe_app.db
@@ -27,7 +28,14 @@ class CookBook(object):
     def __init__(self):
         '''Initialization function.
         Sets up attributes and global variables'''
-        pass
+        
+        global connection   # Accessible from anywhere within the class
+        global cursor       # Accessible from anywhere within the class
+        
+        self.totalcount = 0     # Count the number of recipes
+        # Connection and cursor to the Database
+        connection = apsw.Connection('recipe_app.db')
+        cursor = connection.cursor()
     
     def database_menu():
         '''A loop that displays a list of options that the user 
@@ -55,20 +63,27 @@ class CookBook(object):
 
             # Handle user's option
             if menu_selection == '1': # Show all
-                pass
+                cbk.print_all_recipes() 
+            
             elif menu_selection == '2': # Search
                 pass
+            
             elif menu_selection == '3': # Show a Single Recipe
-                pass
+                cbk.print_all_recipes()
+            
             elif menu_selection == '4': # Delete
                 pass
+            
             elif menu_selection == '5': # Add
                 pass
+            
             elif menu_selection == '6': # Print
-                pass
+                cbk.print_all_recipes()
+            
             elif menu_selection == '0': # Exit
                 print(format(' Good-Bye ', '*^80'))
                 loop = False # Terminate program
+            
             else:
                 print(format(' UNRECOGNIZED COMMAND ', '*^80'))
                 print('{0} is NOT a valid menu selection.'.format(menu_selection))
