@@ -64,7 +64,7 @@ class CookBook(object):
                 cbk.print_all_recipes() 
             
             elif menu_selection == '2': # Search
-                pass
+                cbk.search_for_recipe()
             
             elif menu_selection == '3': # Show a Single Recipe
                 cbk.print_all_recipes() # list the recipes by pkid
@@ -123,10 +123,84 @@ class CookBook(object):
         print('=' * 80)
         inkey = input('press any key to continue >>') # pause
 
-    def search_for_recipe(self):
+    def search_for_recipe(self):         
         '''Allows a database search for a recipe'''
-        pass
-    
+        # Print the search menu
+        print('-' * 80)
+        print(format(' Search Type ', '-^70'))
+        print('-' * 80)
+        print('\t 1 - Recipe Name - a word in the recipe name')
+        print('\t 2 - Recipe Source - a word in the recipe source')
+        print('\t 3 - Ingredients - a word in the ingredients list')
+        print('\t 0 - Return to main menu')
+        print('-' * 80)
+        print('Enter [1 - 3] to select search Type')
+
+        search_type =  input('Enter Search Type -> ')
+
+        if search_type in ['1', '2', '3']:
+
+            if search_type == '1':
+                search_in = 'Recipe Name'
+            
+            elif search_type == '2':
+                search_in = 'Recipe Source'
+            
+            elif search_type == '3':
+                search_in = 'Ingredients'
+            
+            search = search_type
+            search_item = input('Search for what in {} (blank to exit) -> '
+                .format(search_in))
+            
+            if search == '1': # Recipe Name
+                sql = "SELECT pkid,name,source,servings FROM Recipes WHERE name like \
+                    '%%{0}%%'".format(search_item)
+            
+            elif search == '2': # Recipe Source
+                sql = "SELECT pkid,name,source,servings FROM Recipes WHERE source like \
+                    '%%{0}%%'".format(search_item)
+            
+            elif search == '3': # Ingredients
+                sql = "SELECT r.pkid,r.name,r.servings,r.source,\
+                    i.ingredients FROM Recipes r Left Join ingredients i on \
+                    (r.pkid = i.recipeID) WHERE i.ingredients like '%%{0}%%' \
+                    GROUP BY r.pkid".format(search_item)
+            try:
+                if search == '3':
+                    print('{0:5s} {1:35s} {2:10s} {3:15s} {4:55s}'.format(
+                        'Item', 'Name', 'Serves', 'Source', 'Ingredients'))
+                    print('-' * 120)
+
+                else:
+                    print('{0:5s} {1:35s} {2:10s} {3:20}'.format('Item', 
+                        'Name', 'Serves', 'Source'))
+                    print('-' * 80)
+            
+
+                for record in cursor.execute(sql):
+                    if search == '3':
+                        print('{0:5s} {1:35s} {2:10s} {3:15s} {4:55s}'.format(
+                            str(record[0]), str(record[1]), str(record[2]), 
+                            str(record[3]), str(record[4])))
+                        print('-' * 80)
+                        # inkey = input('press any key to continue') # Pause
+                    elif search == '2' or search == '1':
+                        print('{0:5s} {1:35s} {2:10s} {3:20s} '.format(
+                            str(record[0]), str(record[1]), str(record[3]), 
+                            str(record[2])))
+                        print('-' * 80)
+                        # inkey = input('press any key to continue') # Pause
+
+            except NameError:
+                print('A Search Error occured')
+                print('-' * 80)
+                inkey = input('press any key to continue') # Pause
+        elif search_type == '0':
+            print('Retruning to Menu')
+        else:
+            print('INVALID entry -> {0} ....... Returning to main menu'.format(search_type))
+
     def print_single_recipe(self, which):
         '''
         Takes one argument which (the recipe by pkid).
