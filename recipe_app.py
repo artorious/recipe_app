@@ -77,7 +77,19 @@ class CookBook(object):
                     print('Sorry.... NOT a valid recipe NUMBER..')
 
             elif menu_selection == '4': # Delete
-                pass
+                cbk.print_all_recipes() # Display items by pkid
+                print('0 - Return To Menu')
+                try:
+                    record_to_del = int(input(
+                        'Enter Recipe No. to DELETE or 0 to EXIT -> '))
+                    if record_to_del != 0:
+                        cbk.delete_recipe(record_to_del) # call with pkid
+                    elif record_to_del == '0':
+                        print('Back to main menu.....')
+                    else:
+                        print('Unrecognized Command. Returning to Menu')
+                except ValueError:
+                    print('Not a number...back to menu..')
             
             elif menu_selection == '5': # Add
                 cbk.add_new_recipe()
@@ -237,7 +249,22 @@ class CookBook(object):
         Takes one argument which (the recipe).
         Deletes the recipe and all it's info from the database
         '''
-        pass
+        resp = input('Are you sure you want to delete this record? (Y/n) -> ')
+        if resp.upper() == 'Y': 
+            # Delete Recipe records
+            sql = 'DELETE FROM Recipes WHERE pkID = {}'.format(str(which))
+            cursor.execute(sql)
+            sql = 'DELETE FROM Instructions WHERE recipeID = {}'.format(str(which))
+            cursor.execute(sql)
+            sql = 'DELETE FROM Ingredients WHERE recipeID = {}'.format(str(which))
+            cursor.execute(sql)
+            print("\nRecipe information DELETED...")
+            print('~' * 80)
+            inkey = input('Press Enter to return to Main menu -> ')
+        else:
+            print('~' * 80)
+            print('Delete Aborted.. - Returning to Menu')
+            print('~' * 80)
     
     def add_new_recipe(self):
         '''
