@@ -19,7 +19,6 @@ NOTE:
 __AUTHOR__ = 'Arthur Ngondo'
 
 import apsw         # SQLite3 Wrapper
-import string       # 
 import webbrowser   # For printing on a web-browser
 
 class CookBook(object):
@@ -83,7 +82,7 @@ class CookBook(object):
                 pass
             
             elif menu_selection == '5': # Add
-                pass
+                cbk.add_new_recipe()
             
             elif menu_selection == '6': # Print
                 cbk.print_all_recipes()
@@ -241,7 +240,108 @@ class CookBook(object):
         '''
         Adds a new recipe entry into the recipe_app database
         '''
-        pass
+        # Init vars
+        ingredients_list = [] 
+        recipe_name = ''
+        recipe_source = ''
+        recipe_serves = ''
+        instructions = ''
+        last_pkid = 0
+        # Prompt user for Recipe Title, Source & Servings. Escape apstrophes in user input
+        resp = input('Enter Recipe Title (Leave Blank to exit) -> ')
+        if resp != '':
+            
+            if "'" in resp: 
+                recipe_name = resp.replace("'", "\'")
+            else:
+                recipe_name = resp
+            print("RecipeName will be {}.".format(recipe_name))
+
+            resp = input('Enter Recipe Source -> ')              
+            if "'" in resp:
+                recipe_source = resp.replace("'", "\'")
+            else:
+                recipe_source = resp
+
+            resp = input('Enter Number of Servings -> ')
+            if "'" in resp:
+                recipe_serves = resp.replace("'", "\'")
+            else:
+                recipe_serves = resp
+            
+            print('Enter Ingredients List')
+
+            ingredients_loop = True # Controls input of ingredients
+            # ask for each ingredient, appending to ingredients_list while escaping apostrophes
+            while ingredients_loop == True: # enter loop
+                list_item = input('Enter an Ingredient. (0 to finish) -> ')
+                if list_item != '0':
+                    if "'" in list_item:
+                        ingredients_list.append(list_item.replace("'", "\'"))
+                    else:
+                        ingredients_list.append(list_item)
+                else:
+                    ingredients_loop = False # exit the loop when finished
+            
+            # Prompt user for Instructions
+            resp = input('Enter Instructions -> ')
+            if "'" in resp:
+                instructions = resp.replace("'", "\'")
+            else:
+                instructions = resp
+            # Display progress before promting SAVE
+            print('~' * 80)
+            print("Here's what we have so far..")
+            print("Title: {}".format(recipe_name))
+            print("Source: {}".format(recipe_source))
+            print("Servings: {}".format(recipe_serves))
+            print("Ingredients")
+            for item in ingredients_list:
+                print(item)
+            print("Instrcutions: {}".format(instructions))
+            print('~' * 70)
+
+            # Prompt SAVE option
+            resp = input("OK to save? (Y/n) -> ")
+            
+            if resp.upper() != 'N': # Connect to Database
+                # connection=apsw.Connection('recipe_app.db')
+                # cursor=connection.cursor()
+            
+                # Write the Recipe record to the Database
+                sql = 'INSERT INTO Recipes (name,servings,source) \
+                        VALUES ("{0}","{1}","{2}")'.format(
+                        recipe_name, recipe_serves, recipe_source)
+                cursor.execute(sql)
+
+                # Query for Recipe pkid
+                sql = "SELECT last_insert_rowid()"
+                cursor.execute(sql)
+
+                for item in cursor.execute(sql):
+                    last_pkid = item[0] # update pkid for linking other tables as foreign key
+                    print("Last Primary Key = {}".format(last_pkid))
+                
+                # Write the Ingredients Record with appropriate foreign key
+                for list_item in ingredients_list:
+                    sql = 'INSERT INTO Ingredients (recipeID, ingredients) \
+                            VALUES ({0}, "{1}")'.format(last_pkid, list_item)
+                    cursor.execute(sql)
+
+                # Write the Instructions record
+                sql = 'INSERT INTO Instructions (recipeID, ingredients) \
+                            VALUES ({0}, "{1}")'.format(last_pkid, instructions)
+                cursor.execute(sql)
+                # Prompt User that we are DONE..
+                print('Done.....SAVE Successful......')
+
+
+            else:
+                print('Saving ABORTED.....Entries DISCARDED')
+
+        else:
+            print('Returning to Main Menu')
+
     
     def print_out_recipe(self, which):
         '''
