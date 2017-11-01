@@ -14,7 +14,7 @@ Program features:
 NOTE:
     Data stored in Database File: recipe_app.db
 
-'''
+'''                                                                                                                         
 
 __AUTHOR__ = 'Arthur Ngondo'
 
@@ -23,11 +23,11 @@ import webbrowser   # For printing on a web-browser
 
 class CookBook(object):
     '''Class holds recipe_app database routines.'''
-    
+
     def __init__(self):
         '''Initialization function.
-        Sets up attributes and global variables'''
-        
+        Sets up attributes and global variables
+        '''
         global connection   # Accessible from anywhere within the class
         global cursor       # Accessible from anywhere within the class
         
@@ -43,9 +43,7 @@ class CookBook(object):
         loop = True # Controls program temination
         
         while loop == True:
-            print('=' * 80)
             print(format(' RECIPE DATABASE ', '=^80'))
-            print('=' * 80)
             # prompts that the user can perform
             print('\t 1 - Show all recipes')
             print('\t 2 - Search for a recipe')
@@ -104,8 +102,10 @@ class CookBook(object):
         in the  database.
         '''
         # "pretty-print" Header for recipe list. 
+        print('~' * 80 )
         print('{0:5s} {1:35s} {2:10s} {3:20s}'.format('Item', 'Name', 'Serves', \
-                'Source'))  
+                'Source')) 
+        print('~' * 80 )
         # query database and display results from tuple returned by APSW
         sql = 'SELECT * FROM Recipes' 
         cntr = 0 # counts the number of recipes we display to the user
@@ -211,22 +211,25 @@ class CookBook(object):
         for record in cursor.execute(sql):# Query for gross recipe info by pkid
             recipeID = record[0]
             print("Title: {0} ".format(record[1]))
+            print('~' * 6)
             print("Serves: {0} ".format(record[2]))
+            print('~' * 7)
             print("Source: {0} ".format(record[3]))
-            print('')
+            print('~' * 7)
 
         sql = 'SELECT * FROM Ingredients WHERE recipeID={0}'.format(recipeID) 
-        print('Ingredients List:')
+        print('\nIngredients List:')
+        print('~' * 18)
         for record in cursor.execute(sql):# Query for Ingredients info by pkid
             print(record[2])
-        print('')
         
-        print('Instructions:')
+        print('\nInstructions:')
+        print('~' * 14)
         sql = 'SELECT * FROM Instructions WHERE recipeID={0}'.format(recipeID)
        
         for record in cursor.execute(sql): # Query for Instructions info by pkid
             print(record[2])
-        print('*' * 80)
+        print('~' * 120)
         inkey = input('press any key to continue >>') # pause
 
     def delete_recipe(self, which):
@@ -305,8 +308,8 @@ class CookBook(object):
             resp = input("OK to save? (Y/n) -> ")
             
             if resp.upper() != 'N': # Connect to Database
-                # connection=apsw.Connection('recipe_app.db')
-                # cursor=connection.cursor()
+                connection=apsw.Connection('recipe_app.db')
+                cursor=connection.cursor()
             
                 # Write the Recipe record to the Database
                 sql = 'INSERT INTO Recipes (name,servings,source) \
@@ -329,7 +332,7 @@ class CookBook(object):
                     cursor.execute(sql)
 
                 # Write the Instructions record
-                sql = 'INSERT INTO Instructions (recipeID, ingredients) \
+                sql = 'INSERT INTO Instructions (recipeID, instructions) \
                             VALUES ({0}, "{1}")'.format(last_pkid, instructions)
                 cursor.execute(sql)
                 # Prompt User that we are DONE..
