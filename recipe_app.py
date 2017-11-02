@@ -67,7 +67,7 @@ class CookBook(object):
                 cbk.print_all_recipes() # list the recipes by pkid
                 try:
                     recipe_selection = int(input('Enter recipe number or 0 to go back : '))
-                    if recipe_selection <= cbk.totalcount: 
+                    if recipe_selection <= cbk.totalcount: # within range of total recipes
                         cbk.print_single_recipe(recipe_selection) # call with pkid
                     elif recipe_selection == 0:
                         print('Back to main menu')
@@ -79,7 +79,7 @@ class CookBook(object):
             elif menu_selection == '4': # Delete
                 cbk.print_all_recipes() # Display items by pkid
                 print('0 - Return To Menu')
-                try:
+                try:    # Simple error-checking for valid integer input
                     record_to_del = int(input(
                         'Enter Recipe No. to DELETE or 0 to EXIT -> '))
                     if record_to_del != 0:
@@ -95,8 +95,21 @@ class CookBook(object):
                 cbk.add_new_recipe()
             
             elif menu_selection == '6': # Print
-                cbk.print_all_recipes()
-            
+                cbk.print_all_recipes() # Display a list of all recipes by pikid
+                print('0 - Return to Main Menu')
+                print('~' * 20)
+                try:
+                    recipe_to_print = input('Enter recipe to PRINT out or 0 to EXIT -> ')
+                    if recipe_to_print != 0:
+                        cbk.print_out_recipe(recipe_to_print)
+                    elif recipe_to_print == '0':
+                        print('Back to Main Menu...')
+                    else:
+                        print('Unrecognized command. Returning to menu,')
+                except ValueError:
+                    print('Not a number...back to menu.')
+
+
             elif menu_selection == '0': # Exit
                 print(format(' Good-Bye ', '*^80'))
                 loop = False # Terminate program
@@ -251,7 +264,7 @@ class CookBook(object):
         '''
         resp = input('Are you sure you want to delete this record? (Y/n) -> ')
         if resp.upper() == 'Y': 
-            # Delete Recipe records
+            # Delete Recipe records from all tables associated with pkid entered
             sql = 'DELETE FROM Recipes WHERE pkID = {}'.format(str(which))
             cursor.execute(sql)
             sql = 'DELETE FROM Instructions WHERE recipeID = {}'.format(str(which))
@@ -260,7 +273,7 @@ class CookBook(object):
             cursor.execute(sql)
             print("\nRecipe information DELETED...")
             print('~' * 80)
-            inkey = input('Press Enter to return to Main menu -> ')
+            inkey = input('Press Enter to return to Main menu -> ') # Pause
         else:
             print('~' * 80)
             print('Delete Aborted.. - Returning to Menu')
@@ -378,7 +391,66 @@ class CookBook(object):
         Takes one argument which (the recipe).
         Prints out the recipe to default printer.
         '''
-        pass
+        the_page = open('recipe.html', 'w') # Create the HTML file
+        # Pull the recipe info from recipe table by pkid and assign to vars
+        sql = "SELECT * FROM Recipes WHERE pkID = {}".format(which)
+        for recipe_detail in cursor.execute(sql):
+            recipe_name = recipe_detail[1]
+            recipe_source = recipe_detail[3]
+            recipe_serves = recipe_detail[2]
+        # HTML Header Info
+        the_page.write('<!DOCTYPE html>')
+        the_page.write('<html lang="en">')
+
+        the_page.write('<head>')
+        the_page.write('<meta charset="UTF-8">')
+        the_page.write('<title>Recipe Database | Recipes | World Recipes</title>')
+
+        the_page.write('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+        the_page.write('<meta http-equiv="X-UA-Compatible" content="ie=edge">')
+        the_page.write('<meta http-equiv="X-UA-Compatible" content="IE=7">')
+        the_page.write('<meta name="author" content="Arthur Ngondo">')
+        the_page.write('<meta name="dscription" content="Cooking Recipe">')
+        
+        the_page.write('<link rel="shortcut icon" href="static/favicon_an.ico" type="image/x-icon">')
+        # CSS
+        the_page.write('<style>')
+        the_page.write('html {')
+        the_page.write('font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;')
+        the_page.write('background-color: gray; ')
+        the_page.write('background: url(static/background.svg);')
+        the_page.write('}')
+        the_page.write('body {')
+        the_page.write('width: 100%;')
+        the_page.write('max-width: 1366px;')
+        the_page.write('margin: 0 auto; ')
+        the_page.write('}')
+        the_page.write('</style>')
+        the_page.write('</head>')
+
+        the_page.write('<body>')
+        the_page.write("<h1>{}</h1>".format(recipe_name))
+        the_page.write("<h2>Source: {}</h2>".format(recipe_source))
+        the_page.write("<h2>Servings: {}</h2>".format(recipe_serves))
+        
+        the_page.write("<h3>Ingredients List:</h3>")
+        sql = 'SELECT * FROM Ingredients WHERE recipeID = {}'.format(which)
+        the_page.write('<ul>')
+        for ingredients_item in cursor.execute(sql):
+            the_page.write("<li>{}</li>".format(ingredients_item[2]))
+        the_page.write('</ul>')
+        
+        the_page.write("<h3>Instructions: </h3>")
+        sql = 'SELECT * FROM Instructions WHERE recipeID = {}'.format(which)
+        for instructions_item in cursor.execute(sql):
+            the_page.write(instructions_item[2])
+
+        the_page.write('</body>')
+        the_page.write('</html>')   
+        the_page.close() # Close the HTML file
+
+        webbrowser.open('recipe.html')
+        print('Done..')
 
 if __name__ == '__main__':
     CookBook.database_menu()
