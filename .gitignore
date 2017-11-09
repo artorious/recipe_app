@@ -3,5 +3,7 @@ __pycache__/
 *.py[cod]
 *py.class
 
-# file
+# files
 sql-0004-cookbook_database.py
+static/background.png
+recipe.html

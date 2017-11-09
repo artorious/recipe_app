@@ -67,12 +67,22 @@ class CookBook(object):
                 cbk.print_all_recipes() # list the recipes by pkid
                 try:
                     recipe_selection = int(input('Enter recipe number or 0 to go back : '))
-                    if recipe_selection <= cbk.totalcount: # within range of total recipes
+                    
+                    recipe_number_list =  [] # To hold recipe pkid
+                    sql = 'SELECT pkid FROM Recipes' # Get Recipe pkid
+                    
+                    for recipe_number in cursor.execute(sql): 
+                        recipe_number_list.append(recipe_number[0])
+                    
+                    if recipe_selection in recipe_number_list:  # Check that recipe pkid in Database
                         cbk.print_single_recipe(recipe_selection) # call with pkid
+                    
                     elif recipe_selection == 0:
                         print('Back to main menu')
+                    
                     else:
-                        print('Unrecognized Command...Returnnig to menu')
+                        print(format('Unrecognized Command...Returnnig to menu', '*^80'))
+                
                 except ValueError:
                     print('Sorry.... NOT a valid recipe NUMBER..')
 
@@ -145,7 +155,7 @@ class CookBook(object):
         print('=' * 80)   
         print('Total Recipes - {0}'.format(self.totalcount))
         print('=' * 80)
-        inkey = input('press any key to continue >>') # pause
+        inkey = input('Hit [Enter] to continue >>>>>  ') # pause
 
     def search_for_recipe(self):         
         '''Allows a database search for a recipe'''
@@ -192,11 +202,13 @@ class CookBook(object):
                     GROUP BY r.pkid".format(search_item)
             try:
                 if search == '3':
+                    print('-' * 120)
                     print('{0:5s} {1:35s} {2:10s} {3:15s} {4:55s}'.format(
                         'Item', 'Name', 'Serves', 'Source', 'Ingredients'))
                     print('-' * 120)
 
                 else:
+                    print('-' * 80)
                     print('{0:5s} {1:35s} {2:10s} {3:20}'.format('Item', 
                         'Name', 'Serves', 'Source'))
                     print('-' * 80)
@@ -207,19 +219,19 @@ class CookBook(object):
                         print('{0:5s} {1:35s} {2:10s} {3:15s} {4:55s}'.format(
                             str(record[0]), str(record[1]), str(record[2]), 
                             str(record[3]), str(record[4])))
-                        print('-' * 80)
-                        # inkey = input('press any key to continue') # Pause
+                        
                     elif search == '2' or search == '1':
                         print('{0:5s} {1:35s} {2:10s} {3:20s} '.format(
                             str(record[0]), str(record[1]), str(record[3]), 
                             str(record[2])))
                         print('-' * 80)
-                        # inkey = input('press any key to continue') # Pause
+                        
 
             except NameError:
                 print('A Search Error occured')
                 print('-' * 80)
-                inkey = input('press any key to continue') # Pause
+                inkey = input('Hit [Enter] to continue') # Pause
+
         elif search_type == '0':
             print('Retruning to Menu')
         else:
@@ -255,7 +267,7 @@ class CookBook(object):
         for record in cursor.execute(sql): # Query for Instructions info by pkid
             print(record[2])
         print('~' * 120)
-        inkey = input('press any key to continue >>') # pause
+        inkey = input('Hit [Enter] to continue >>') # pause
 
     def delete_recipe(self, which):
         '''
